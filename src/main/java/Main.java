@@ -136,8 +136,6 @@ public class Main {
              ) {
             for (String consecuente: seleccionados
                  ) {
-                if (consecuente.length() == laMaxima && antecedente.length() < laMaxima) //Verificamos que el consecuente tratado sea del mayor tamaño posible y que el antecedente no sea igual al consecuente
-                {
                     subAntecedente = antecedente.substring(0, antecedente.indexOf(":")); //En estas variables obtenemos la parte del string del antecedente y consecuente donde se encuentran los elementos
                     subConsecuente = consecuente.substring(0, consecuente.indexOf(":"));
 
@@ -168,11 +166,11 @@ public class Main {
                         }
                     }
 
-                    if(bandera == true)
+                    if(bandera == true && !consecuenteSB.toString().isEmpty())
                     {
                         confianzaCaso = (cantidadConsecuente/cantidadAntecedente); //Calculamos el porcentaje de confianza de esta posible regla y luego la imprimimos de color rojo si no cumple con la confianza minima establecida,
                         // de lo contrario es impresa en color blanco
-
+                        //System.out.println(consecuenteSB);
                         if(confianzaCaso >= confianza)
                         {
                             System.out.println(subAntecedente + " => " + consecuenteSB + " : conf = " + confianzaCaso);
@@ -183,7 +181,6 @@ public class Main {
                     }
 
                     consecuenteSB.delete(0, consecuenteSB.length()); //Limpiamos la variable de impresion del consecuente para el proximo caso
-                }
             }
         }
     }
