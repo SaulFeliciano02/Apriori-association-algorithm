@@ -14,6 +14,8 @@ public class Main {
     public static ArrayList<String> transacciones = new ArrayList<>();
     public static ArrayList<String> seleccionados = new ArrayList<>();
     public static ArrayList<String> elementosCantidad = new ArrayList<>();
+    public static ArrayList<String> antecedentes = new ArrayList<>();
+    public static ArrayList<String> consecuentes = new ArrayList<>();
 
     public static void main(String[] args) {
 
@@ -35,6 +37,11 @@ public class Main {
         ArrayList<Float> ordena2 = new ArrayList<>();
         Float[] prueba = new Float[10000];
         ArrayList<String> totalOrdenado = new ArrayList<>();
+        StringBuilder reglaComma = new StringBuilder();
+        char[] antecedenteComma = new char[20];
+        char[] consecuenteComma = new char[20];
+        LinkedList<Character> antecedenteSinComma = new LinkedList<>();
+        LinkedList<Character> consecuenteSinComma = new LinkedList<>();
 
         System.out.println("Introduzca el path del archivo a analizar\n");
 
@@ -193,7 +200,38 @@ public class Main {
                 regla = regla.replaceAll("\\s+","");
                 if(Float.parseFloat(rule.substring(rule.indexOf("=")+2, rule.length())) == conf && !totalOrdenado.contains(regla))
                 {
-                    totalOrdenado.add(regla);
+                    reglaComma.append(regla);
+//                    antecedenteSinComma = reglaComma.substring(0, reglaComma.indexOf("-")).toCharArray();
+//                    consecuenteSinComma = reglaComma.substring(reglaComma.indexOf(">")+1, reglaComma.indexOf(":")).toCharArray();
+                    //System.out.println(reglaComma.substring(0, reglaComma.indexOf("-")) + " " + reglaComma.substring(0, reglaComma.indexOf("-")).length());
+                    if(reglaComma.substring(0, reglaComma.indexOf("-")).length() > 1)
+                    {
+                        antecedenteComma = reglaComma.substring(0, reglaComma.indexOf("-")).toCharArray();
+                        for (int j = 0; j < antecedenteComma.length-1; j++)
+                        {
+                            if (!String.valueOf(antecedenteComma[j+1]).equals(null))
+                            {
+                                reglaComma.insert(reglaComma.indexOf(String.valueOf(antecedenteComma[j+1])), ",");
+                            }
+                        }
+                    }
+                    if(reglaComma.substring(reglaComma.indexOf(">")+1, reglaComma.indexOf(":")).length() > 1)
+                    {
+                        consecuenteComma = reglaComma.substring(reglaComma.indexOf(">")+1, reglaComma.indexOf(":")).toCharArray();
+                        for (int j = 0; j < consecuenteComma.length-1; j++)
+                        {
+                            if (!String.valueOf(consecuenteComma[j+1]).equals(null))
+                            {
+                                reglaComma.insert(reglaComma.indexOf(String.valueOf(consecuenteComma[j+1])), ",");
+                            }
+                        }
+                    }
+                    if(!totalOrdenado.contains(reglaComma.toString()))
+                    {
+                        totalOrdenado.add(reglaComma.toString());
+                    }
+
+                    reglaComma.delete(0, reglaComma.length());
                 }
             }
         }
@@ -202,6 +240,7 @@ public class Main {
              ) {
             System.out.println(ord);
         }
+
 
     }
 
@@ -274,5 +313,33 @@ public class Main {
         //Esto no esta haciendo nada. Es un comodin para que la funcion no resulte con un error.
         return combinaciones;
 
+    }
+
+    public static void escribeAntecedentes(String a, LinkedList<Character> conjunto) {
+        if (conjunto.size()==1)
+        {
+            antecedentes.add(a+conjunto.get(0));
+            //System.out.println(a+conjunto.get(0));
+        }
+        for (int i=0;i<conjunto.size();i++)
+        {
+            Character b = conjunto.remove(i);
+            escribeAntecedentes (a+b, conjunto);
+            conjunto.add(i,b);
+        }
+    }
+
+    public static void escribeConcecuentes(String a, LinkedList<Character> conjunto) {
+        if (conjunto.size()==1)
+        {
+            consecuentes.add(a+conjunto.get(0));
+            //System.out.println(a+conjunto.get(0));
+        }
+        for (int i=0;i<conjunto.size();i++)
+        {
+            Character b = conjunto.remove(i);
+            escribeAntecedentes (a+b, conjunto);
+            conjunto.add(i,b);
+        }
     }
 }
